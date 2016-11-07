@@ -18,10 +18,9 @@ defmodule CodeCorps.ProjectControllerTest do
       organization_slug = "test-organization"
       organization = insert(:organization, name: "Test Organization", slug: organization_slug)
       insert(:slugged_route, organization: organization, slug: organization_slug)
-      project_1 = insert(:project, title: "Test Project 1", organization: organization)
-      project_2 = insert(:project, title: "Test Project 2", organization: organization)
+      [project_1, project_2] = insert_pair(:project)
 
-      path = "/#{organization_slug}/projects"
+      path = ("/#{organization_slug}/projects")
 
       conn
       |> get(path)
@@ -49,14 +48,16 @@ defmodule CodeCorps.ProjectControllerTest do
     end
 
     test "shows chosen resource retrieved by slug", %{conn: conn} do
-      project = insert(:project, title: "Test project", slug: "test-project")
+      organization = insert(:organization)
+      project = insert(:project, organization: organization)
 
-      conn = get conn, "/test-organization/test-project"
+      path = "#{organization.slug}/#{project.slug}"
 
-        conn
-        |> json_response(200)
-        |> Map.get("data")
-        |> assert_result_id(project.id)
+      conn
+      |> get(path)
+      |> json_response(200)
+      |> Map.get("data")
+      |> assert_result_id(project.id)
     end
 
     test "retrieval by slug is case insensitive", %{conn: conn} do
@@ -68,7 +69,7 @@ defmodule CodeCorps.ProjectControllerTest do
   end
 
   describe "create" do
-    @tag authenticated: :admin
+    @tag :authenticated
     test "creates and renders resource when attributes are valid", %{conn: conn, current_user: current_user} do
       organization = insert(:organization)
       insert(:organization_membership, role: "admin", member: current_user, organization: organization)
