@@ -1,5 +1,5 @@
 defmodule CodeCorps.UserControllerTest do
-  use CodeCorps.ApiCase
+  use CodeCorps.ApiCase, resource_name: :user
 
   alias CodeCorps.User
   alias CodeCorps.Repo
@@ -27,19 +27,23 @@ defmodule CodeCorps.UserControllerTest do
   describe "index" do
 
     test "lists all entries on index", %{conn: conn} do
-      conn = get conn, user_path(conn, :index)
-      assert json_response(conn, 200)["data"] == []
+      [user_1, user_2] = insert_pair(:user)
+
+      conn
+        |> request_index
+        |> json_response(200)
+        |> assert_ids_from_response([user_1.id, user_2.id])
     end
 
     test "filters resources on index", %{conn: conn} do
-      [user_1, user_2] = insert_pair(:user)
-      insert(:user, username: "user_3", email: "user_3@mail.com")
-      conn = get conn, "users/?filter[id]=#{user_1.id},#{user_2.id}"
-      data = json_response(conn, 200)["data"]
-      [first_result, second_result | _] = data
-      assert length(data) == 2
-      assert first_result["id"] == "#{user_1.id}"
-      assert second_result["id"] == "#{user_2.id}"
+      [user_1, user_2 | _] = insert_list(3, :user)
+
+      path = "users/?filter[id]=#{user_1.id},#{user_2.id}"
+
+      conn
+      |> get(path)
+      |> json_response(200)
+      |> assert_ids_from_response([user_1.id, user_2.id])
     end
   end
 
@@ -47,13 +51,11 @@ defmodule CodeCorps.UserControllerTest do
 
     test "shows chosen resource", %{conn: conn} do
       user = insert(:user)
-      conn = get conn, user_path(conn, :show, user)
-      data = json_response(conn, 200)["data"]
-      assert data["id"] == "#{user.id}"
-      assert data["type"] == "user"
-      assert data["attributes"]["username"] == user.username
-      assert data["attributes"]["email"] == ""
-      assert data["attributes"]["password"] == nil
+      conn
+      |> request_show(user)
+      |> json_response(200)
+      |> Map.get("data")
+      |> assert_result_id(user.id)
     end
 
     test "renders email when authenticated", %{conn: conn} do
@@ -65,8 +67,7 @@ defmodule CodeCorps.UserControllerTest do
     end
 
     test "renders 404 when id is nonexistent", %{conn: conn} do
-      path = conn |> user_path(:show, -1)
-      assert conn |> get(path) |> json_response(404)
+      assert conn |> request_show(:not_found) |> json_response(404)
     end
   end
 
