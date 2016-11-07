@@ -88,8 +88,8 @@ defmodule CodeCorps.ProjectControllerTest do
 
     @tag :authenticated
     test "renders 403 when not authorized", %{conn: conn} do
-      organization = insert(:organization)
-      attrs = @invalid_attrs |> Map.merge(%{organization: organization})
+      # Need the organization in order to access membership in the project policy
+      attrs = %{organization: insert(:organization)}
       assert conn |> request_create(attrs) |> json_response(403)
     end
   end
@@ -121,8 +121,8 @@ defmodule CodeCorps.ProjectControllerTest do
 
     @tag :authenticated
     test "renders 403 when not authorized", %{conn: conn} do
-      organization = insert(:organization)
-      attrs = @invalid_attrs |> Map.merge(%{organization: organization})
+      # Need the organization in order to access membership in the project policy
+      attrs = %{organization: insert(:organization)}
       assert conn |> request_update(attrs) |> json_response(403)
     end
 
