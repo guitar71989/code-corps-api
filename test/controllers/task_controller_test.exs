@@ -138,7 +138,7 @@ defmodule CodeCorps.TaskControllerTest do
     test "creates and renders resource when data is valid", %{conn: conn, current_user: current_user} do
       project = insert(:project)
 
-      attrs = @valid_attrs |> Map.merge(%{project: project})
+      attrs = @valid_attrs |> Map.merge(%{project: project, user: current_user})
       assert conn |> request_create(attrs) |> json_response(201)]
 
       # ensure record is reloaded from database before serialized, since number is added
@@ -157,12 +157,11 @@ defmodule CodeCorps.TaskControllerTest do
   end
 
   describe "update" do
-    @tag :authenticated
+    @tag authenticated: :admin
     test "updates and renders chosen resource when data is valid", %{conn: conn, current_user: current_user} do
       task = insert(:task, user: current_user)
 
-      attrs = @valid_attrs |> Map.merge(%{task: task})
-      assert conn |> request_update(attrs) |> json_response(200)
+      assert conn |> request_update(@valid_attrs) |> json_response(200)
     end
 
     @tag :authenticated
