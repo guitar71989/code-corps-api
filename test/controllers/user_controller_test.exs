@@ -12,7 +12,7 @@ defmodule CodeCorps.UserControllerTest do
     last_name: "User",
     website: "http://www.example.com",
     twitter: "testuser",
-    biography: "Just a test user",
+    biography: "Just a test user"
   }
 
   @invalid_attrs %{
