@@ -6,7 +6,7 @@ defmodule CodeCorps.Helpers.Policy do
 
   import Ecto.Query
 
-  alias CodeCorps.{Organization, OrganizationMembership, Project, Repo, StripeCustomer, User}
+  alias CodeCorps.{Organization, OrganizationMembership, Project, Repo, User}
   alias Ecto.Changeset
 
   @doc """
@@ -24,7 +24,6 @@ defmodule CodeCorps.Helpers.Policy do
     |> where([m], m.member_id == ^user_id and m.organization_id == ^organization_id)
     |> Repo.one
   end
-  def get_membership(%StripeCustomer{organization_id: organization_id}, %User{id: user_id}), do: do_get_membership(organization_id, user_id)
 
 
   @doc """

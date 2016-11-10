@@ -11,7 +11,7 @@ defmodule CodeCorps.StripeCustomerPolicyTest do
 
     end
 
-    test "returns false when user is an admin or owner of an organization " do
+    test "returns true when user is viewing their own information" do
 
     end
 
@@ -25,11 +25,7 @@ defmodule CodeCorps.StripeCustomerPolicyTest do
 
     end
 
-    test "returns false when user is an admin" do
-
-    end
-
-    test "returns false when user is admin of organization" do
+    test "returns true when user is an admin" do
 
     end
 
