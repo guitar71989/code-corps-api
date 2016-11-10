@@ -25,7 +25,6 @@ defmodule CodeCorps.Helpers.Policy do
     |> Repo.one
   end
 
-
   @doc """
   Retrieves a project record, from a model struct, or an `Ecto.Changeset` containing a `project_id` field
 
