@@ -16,7 +16,7 @@ defmodule CodeCorps.TaskControllerTest do
 
   describe "index" do
     test "lists all entries", %{conn: conn} do
-      [task_1, task_2] = insert_pair(:task)
+    [task_1, task_2] = insert_pair(:task)
 
     conn
     |> request_index
@@ -139,11 +139,11 @@ defmodule CodeCorps.TaskControllerTest do
     test "creates and renders resource when data is valid", %{conn: conn, current_user: current_user} do
       project = insert(:project)
       attrs = @valid_attrs |> Map.merge(%{project: project, user: current_user})
-      assert conn |> request_create(attrs) |> json_response(201)
+      json = conn |> request_create(attrs) |> json_response(201)
 
       # ensure record is reloaded from database before serialized, since number is added
       # on database level upon insert
-      #assert json["data"]["attributes"]["number"] == 1
+      assert json["data"]["attributes"]["number"] == 1
     end
 
     @tag :authenticated
