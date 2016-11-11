@@ -30,9 +30,9 @@ defmodule CodeCorps.UserControllerTest do
       [user_1, user_2] = insert_pair(:user)
 
       conn
-        |> request_index
-        |> json_response(200)
-        |> assert_ids_from_response([user_1.id, user_2.id])
+      |> request_index
+      |> json_response(200)
+      |> assert_ids_from_response([user_1.id, user_2.id])
     end
 
     test "filters resources on index", %{conn: conn} do
@@ -122,7 +122,7 @@ defmodule CodeCorps.UserControllerTest do
 
       path = user_path(conn, :update, user)
 
-    assert conn |> authenticate(user) |> put(path, params) |> json_response(200)
+      assert conn |> authenticate(user) |> put(path, params) |> json_response(200)
     end
 
     test "tracks authentication & update profile events in Segment", %{conn: conn} do
