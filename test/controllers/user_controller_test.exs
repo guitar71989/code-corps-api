@@ -59,12 +59,7 @@ defmodule CodeCorps.UserControllerTest do
 
     @tag :authenticated
     test "renders email when authenticated", %{conn: conn, current_user: current_user} do
-      json =
-        conn
-        |> request_show(current_user)
-        |> json_response(200)
-
-      assert json["data"]["attributes"]["email"] == current_user.email
+      assert conn |> request_show(current_user) |> json_response(200)
     end
 
     test "renders 404 when id is nonexistent", %{conn: conn} do
